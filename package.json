@@ -1,0 +1,21 @@
+{
+  "name": "k6-learn",
+  "version": "1.0.0",
+  "description": "Learning K6 performance testing.",
+  "main": "batch-request.js",
+  "scripts": {
+    "test": "k6 k6-basics.js"
+  },
+  "keywords": [
+    "load-testing",
+    "k6",
+    "performance-testing",
+    "automation"
+  ],
+  "author": "Krishna Kumar Singh",
+  "license": "ISC",
+  "dependencies": {
+    "@types/k6": "^0.51.0",
+    "har-to-k6": "^0.14.8"
+  }
+}

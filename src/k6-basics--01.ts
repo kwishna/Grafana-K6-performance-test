@@ -1,8 +1,9 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
+import { Options } from "k6/options";
 
 // Test configuration
-export const options = {
+export const options: Options = {
   thresholds: {
     // Assert that 99% of requests finish within 3000ms.
     http_req_duration: ["p(99) < 3000"],
