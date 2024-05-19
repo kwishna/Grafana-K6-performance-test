@@ -112,28 +112,74 @@ export const options = {
     // ----------------------------------------------------------------------------------------------------------------------
     // ======================================================================================================================
     // ----------------------------------------------------------------------------------------------------------------------
-    "scenario_name_5": {
-      // A fixed number of iterations are executed in a specified period of time.
-      executor: "constant-arrival-rate",
+    // "scenario_name_5": {
+    //   // A fixed number of iterations are executed in a specified period of time.
+    //   executor: "constant-arrival-rate",
+
+    //   // common scenario configuration
+    //   startTime: '1s', // Waiting time before execution starts.
+    //   gracefulStop: '5s', // Time to wait for iterations to finish executing before stopping them forcefully.
+
+    //   exec: 'get_request', // Name of exported JS function to execute. Ex. 'default'
+
+    //   // executor-specific configuration ||  ||
+    //   rate: 10, // Number of iterations to execute each `timeUnit` period.
+    //   timeUnit: '10s', // Period of time to apply the `rate` value.
+
+    //   // So, 10 iterations in 10 seconds means 1 iteration per second.
+
+    //   duration: '30s', // Total scenario duration (excluding `gracefulStop`)
+    //   preAllocatedVUs: 5, // Number of VUs to pre-allocate before test start in order to preserve runtime resources.
+    //   maxVUs: 15 // Maximum number of VUs to allow during the test run.
+
+    //   // running (10.1s), 02/05 VUs, 9 complete and 0 interrupted iterations
+    //   // running (31.6s), 00/05 VUs, 31 complete and 0 interrupted iterations
+    //   // 1.00 iterations/s for 30s
+    // }
+    // ----------------------------------------------------------------------------------------------------------------------
+    // ======================================================================================================================
+    // ----------------------------------------------------------------------------------------------------------------------
+    "scenario_name_6": {
+      // A variable number of iterations are executed in a specified period of time.
+      executor: "ramping-arrival-rate",
 
       // common scenario configuration
       startTime: '1s', // Waiting time before execution starts.
       gracefulStop: '5s', // Time to wait for iterations to finish executing before stopping them forcefully.
-      env: {
-        date: `${Date.now()}`
-      },
-      tags: {
-        tagName: '@GetReq'
-      },
 
       exec: 'get_request', // Name of exported JS function to execute. Ex. 'default'
 
-      // executor-specific configuration ||  ||
-      duration: '20s', // Total scenario duration (excluding `gracefulStop`)
-      rate: 10, // Number of iterations to execute each `timeUnit` period.
-      timeUnit: '5s', // Period of time to apply the `rate` value.
-      preAllocatedVUs: 5, // Number of VUs to pre-allocate before test start in order to preserve runtime resources.
-      maxVUs: 15 // Maximum number of VUs to allow during the test run.
+      // executor-specific configuration
+      /** Array of objects that specify the number of VUs to ramp up or down to. */
+      stages: [
+        {
+          duration: '10s', // Stage duration
+          target: 10 // Target number of VUs.
+        },
+        {
+          duration: '20s', // Stage duration
+          target: 20 // Target number of VUs.
+        },
+        {
+          duration: '30s', // Stage duration
+          target: 30 // Target number of VUs.
+        },
+        {
+          duration: '10s', // Stage duration
+          target: 10 // Target number of VUs.
+        }
+      ],
+
+      startRate: 300, // Start iterations per `timeUnit`
+      timeUnit: '1m', // Start `startRate` iterations per minute
+      preAllocatedVUs: 50, // Pre-allocate necessary VUs.
+
+      stages: [
+        { target: 300, duration: '1m' }, // Start 300 iterations per `timeUnit` for the first minute.
+        { target: 600, duration: '2m' }, // Linearly ramp-up to starting 600 iterations per `timeUnit` over the following two minutes.
+        { target: 600, duration: '4m' }, // Continue starting 600 iterations per `timeUnit` for the following four minutes.
+        { target: 60, duration: '2m' },  // Linearly ramp-down to starting 60 iterations per `timeUnit` over the last two minutes.
+      ],
     }
   },
 };
