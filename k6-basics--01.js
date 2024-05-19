@@ -139,51 +139,82 @@ export const options = {
     // ----------------------------------------------------------------------------------------------------------------------
     // ======================================================================================================================
     // ----------------------------------------------------------------------------------------------------------------------
-    "scenario_name_6": {
-      // A variable number of iterations are executed in a specified period of time.
-      executor: "ramping-arrival-rate",
+    // "scenario_name_6": {
+    //   // A variable number of iterations are executed in a specified period of time.
+    //   executor: "ramping-arrival-rate",
+
+    //   // common scenario configuration
+    //   startTime: '1s', // Waiting time before execution starts.
+    //   gracefulStop: '5s', // Time to wait for iterations to finish executing before stopping them forcefully.
+
+    //   exec: 'get_request', // Name of exported JS function to execute. Ex. 'default'
+
+    //   // executor-specific configuration
+    //   /** Array of objects that specify the number of VUs to ramp up or down to. */
+    //   stages: [
+    //     {
+    //       duration: '10s', // Stage duration
+    //       target: 10 // Target number of VUs.
+    //     },
+    //     {
+    //       duration: '20s', // Stage duration
+    //       target: 20 // Target number of VUs.
+    //     },
+    //     {
+    //       duration: '30s', // Stage duration
+    //       target: 30 // Target number of VUs.
+    //     },
+    //     {
+    //       duration: '10s', // Stage duration
+    //       target: 10 // Target number of VUs.
+    //     }
+    //   ],
+
+    //   startRate: 300, // Start iterations per `timeUnit`
+    //   timeUnit: '1m', // Start `startRate` iterations per minute
+    //   preAllocatedVUs: 50, // Pre-allocate necessary VUs.
+
+    //   stages: [
+    //     { target: 300, duration: '1m' }, // Start 300 iterations per `timeUnit` for the first minute.
+    //     { target: 600, duration: '2m' }, // Linearly ramp-up to starting 600 iterations per `timeUnit` over the following two minutes.
+    //     { target: 600, duration: '4m' }, // Continue starting 600 iterations per `timeUnit` for the following four minutes.
+    //     { target: 60, duration: '2m' },  // Linearly ramp-down to starting 60 iterations per `timeUnit` over the last two minutes.
+    //   ],
+    // },
+
+    "scenario_name_7": {
+      // Control and scale execution at runtime via k6's REST API or the CLI.
+      executor: "externally-controlled",
 
       // common scenario configuration
       startTime: '1s', // Waiting time before execution starts.
-      gracefulStop: '5s', // Time to wait for iterations to finish executing before stopping them forcefully.
+      // // NOT ALLOWED // gracefulStop: '5s', // Time to wait for iterations to finish executing before stopping them forcefully.
 
       exec: 'get_request', // Name of exported JS function to execute. Ex. 'default'
 
       // executor-specific configuration
-      /** Array of objects that specify the number of VUs to ramp up or down to. */
-      stages: [
-        {
-          duration: '10s', // Stage duration
-          target: 10 // Target number of VUs.
-        },
-        {
-          duration: '20s', // Stage duration
-          target: 20 // Target number of VUs.
-        },
-        {
-          duration: '30s', // Stage duration
-          target: 30 // Target number of VUs.
-        },
-        {
-          duration: '10s', // Stage duration
-          target: 10 // Target number of VUs.
-        }
-      ],
-
-      startRate: 300, // Start iterations per `timeUnit`
-      timeUnit: '1m', // Start `startRate` iterations per minute
-      preAllocatedVUs: 50, // Pre-allocate necessary VUs.
-
-      stages: [
-        { target: 300, duration: '1m' }, // Start 300 iterations per `timeUnit` for the first minute.
-        { target: 600, duration: '2m' }, // Linearly ramp-up to starting 600 iterations per `timeUnit` over the following two minutes.
-        { target: 600, duration: '4m' }, // Continue starting 600 iterations per `timeUnit` for the following four minutes.
-        { target: 60, duration: '2m' },  // Linearly ramp-down to starting 60 iterations per `timeUnit` over the last two minutes.
-      ],
+      vus: 10, // Number of VUs to run concurrently.
+      duration: '20s', // Total scenario duration (excluding `gracefulStop`)
+      maxVUs: 15 // Maximum number of VUs to allow during the test run
     }
   },
 };
 
 export function get_request() {
+
+  /*
+    By number of iterations :-
+        - shared-iterations shares iterations between VUs.
+        - per-vu-iterations has each VU run the configured iterations.
+
+    By number of VUs :-
+        - constant-VUs sends VUs at a constant number.
+        - ramping-vus ramps the number of VUs according to your configured stages.
+    
+    By iteration rate :-
+        - constant-arrival-rate starts iterations at a constant rate.
+        - ramping-arrival-rate ramps the iteration rate according to your configured stages.
+  */
+
   http.get("http://test.k6.io");
 }
