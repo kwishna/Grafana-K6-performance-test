@@ -4,7 +4,10 @@
   "description": "Learning K6 performance testing.",
   "main": "batch-request.js",
   "scripts": {
-    "test": "k6 k6-basics.js"
+    "test": "k6 run -e MY_HOSTNAME=test.k6.io --no-usage-report --vus 10 --duration 10s ./src/k6-official-site/basics--003.js",
+    "test:1": "k6 run --iterations=100 --vus=10 --out json=test_results.json --out csv=test_results.csv --summary-trend-stats=\"med,p(95),p(99.9)\" ./src/k6-official-site/basics--003.js",
+    "test:2": "k6 run --summary-trend-stats --summary-time-unit=ms \"min,avg,med,max,count,p(95),p(99),p(99.99)\" ./src/k6-official-site/basics--005-threshold.js" ,   
+    "test:3": "k6 run --no-setup --no-teardown --config options.json ./src/k6-official-site/basics--005-threshold.js"    
   },
   "keywords": [
     "load-testing",
