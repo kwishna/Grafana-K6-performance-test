@@ -6,10 +6,11 @@
   "scripts": {
     "test": "k6 run -e MY_HOSTNAME=test.k6.io --no-usage-report --vus 10 --duration 10s ./src/k6-official-site/basics--003.js",
     "test:1": "k6 run --iterations=100 --vus=10 --out json=test_results.json --out csv=test_results.csv --summary-trend-stats=\"med,p(95),p(99.9)\" ./src/k6-official-site/basics--003.js",
-    "test:2": "k6 run  --summary-time-unit=ms --summary-trend-stats\"min,avg,med,max,count,p(95),p(99),p(99.99)\" ./src/k6-official-site/basics--005-threshold.js" ,   
+    "test:2": "k6 run  --summary-time-unit=ms --summary-trend-stats\"min,avg,med,max,count,p(95),p(99),p(99.99)\" ./src/k6-official-site/basics--005-threshold.js",
     "test:3": "k6 run --no-setup --no-teardown --config options.json ./src/k6-official-site/basics--005-threshold.js",
     "pw": "playwright codegen --target=javascript -o script.js -b chromium --viewport-size=\"1600, 800\" https://the-internet.herokuapp.com",
-    "ui:test": "k6 -e K6_BROWSER_HEADLESS=false --out json=test_results.json --out csv=test_results.csv run ./src/ui/tests/poc.spec.js"
+    "ui:test": "k6 -e K6_BROWSER_HEADLESS=false --out json=test_results.json --out csv=test_results.csv run ./src/ui/tests/poc.spec.js",
+    "pretest": "webpack"
   },
   "keywords": [
     "load-testing",
@@ -20,7 +21,16 @@
   "author": "Krishna Kumar Singh",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
     "@types/k6": "^0.51.0",
-    "har-to-k6": "^0.14.8"
+    "babel-loader": "^9.1.3",
+    "core-js": "^3.37.1",
+    "har-to-k6": "^0.14.8",
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "devDependencies": {
+    "@apideck/postman-to-k6": "^1.10.0"
   }
 }
